@@ -18,6 +18,18 @@ export default function Home() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      setMessage(`로그아웃하지 못했습니다: ${error.message}`);
+      return;
+    }
+
+    setUser(null);
+    setMessage("");
+  };
+
   useEffect(() => {
     let active = true;
 
@@ -52,7 +64,12 @@ export default function Home() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">역사 인물</h1>
         {user ? (
-          <span className="text-sm text-gray-600">{user.email}</span>
+          <div className="flex items-center gap-3 text-sm">
+            <span className="text-gray-600">{user.email}</span>
+            <button type="button" onClick={handleLogout} className="underline">
+              로그아웃
+            </button>
+          </div>
         ) : (
           <Link href="/login" className="text-sm underline">
             로그인
